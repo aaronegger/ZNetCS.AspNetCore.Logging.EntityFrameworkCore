@@ -41,7 +41,7 @@ public class EntityFrameworkLoggerProvider<TContext> : EntityFrameworkLoggerProv
     /// <param name="creator">
     /// The creator used to create new instance of log.
     /// </param>
-    public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, Log>? creator = null)
+    public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, string?, string?, Log>? creator = null)
         : base(serviceProvider, filter, creator)
     {
     }
@@ -84,7 +84,7 @@ public class EntityFrameworkLoggerProvider<TContext, TLog> : EntityFrameworkLogg
     /// <param name="creator">
     /// The creator used to create new instance of log.
     /// </param>
-    public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog>? creator = null)
+    public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, string?, string?, TLog>? creator = null)
         : base(serviceProvider, filter, creator)
     {
     }
@@ -128,7 +128,7 @@ public class EntityFrameworkLoggerProvider<TContext, TLog, TLogger> : EntityFram
     /// <param name="creator">
     /// The creator used to create new instance of log.
     /// </param>
-    public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog>? creator = null)
+    public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, string?, string?, TLog>? creator = null)
         : base(serviceProvider, filter, creator)
     {
     }
@@ -178,7 +178,7 @@ public class EntityFrameworkLoggerProvider<TContext, TLog, TLogger, TKey> : Enti
     /// <summary>
     /// The function used to create new model instance for a log.
     /// </summary>
-    private readonly Func<int, int, string, string, TLog>? creator;
+    private readonly Func<int, int, string, string, string?, string?, TLog>? creator;
 
     /// <summary>
     /// The object factory to create new logger used defined types.
@@ -211,14 +211,14 @@ public class EntityFrameworkLoggerProvider<TContext, TLog, TLogger, TKey> : Enti
     /// <param name="creator">
     /// The creator used to create new instance of log.
     /// </param>
-    public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, TLog>? creator = null)
+    public EntityFrameworkLoggerProvider(IServiceProvider serviceProvider, Func<string, LogLevel, bool> filter, Func<int, int, string, string, string?, string?, TLog>? creator = null)
     {
         this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         this.filter = filter ?? throw new ArgumentNullException(nameof(filter));
         this.creator = creator;
         this.factory = ActivatorUtilities.CreateFactory(
             typeof(TLogger),
-            new[] { typeof(string), typeof(Func<string, LogLevel, bool>), typeof(Func<int, int, string, string, TLog>) });
+            new[] { typeof(string), typeof(Func<string, LogLevel, bool>), typeof(Func<int, int, string, string, string?, string?, TLog>) });
     }
 
     /// <summary>
@@ -244,7 +244,7 @@ public class EntityFrameworkLoggerProvider<TContext, TLog, TLogger, TKey> : Enti
         this.creator = options.Value.Creator;
         this.factory = ActivatorUtilities.CreateFactory(
             typeof(TLogger),
-            new[] { typeof(string), typeof(Func<string, LogLevel, bool>), typeof(Func<int, int, string, string, TLog>) });
+            new[] { typeof(string), typeof(Func<string, LogLevel, bool>), typeof(Func<int, int, string, string, string?, string?, TLog>) });
     }
 
     #endregion

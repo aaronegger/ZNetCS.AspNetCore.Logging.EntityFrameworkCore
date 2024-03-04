@@ -55,6 +55,8 @@ public class TestLoggerBuilderSimpleException
         Assert.AreEqual(1, logs.Count);
         Assert.AreEqual(true, logs.First().Message.StartsWith("Exception message"));
         Assert.AreEqual(1, logs.First().EventId);
+        Assert.IsNotNull(logs.First().Stacktrace);
+        Assert.IsNotNull(logs.First().Exception);
     }
 
     #endregion

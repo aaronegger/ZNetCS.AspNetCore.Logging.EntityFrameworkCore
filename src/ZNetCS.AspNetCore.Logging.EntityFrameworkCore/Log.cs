@@ -54,6 +54,16 @@ public class Log<TKey> where TKey : IEquatable<TKey>
     public virtual string Message { get; set; } = default!;
 
     /// <summary>
+    /// Gets or sets the stacktrace.
+    /// </summary>
+    public virtual string? Stacktrace { get; set; } = default!;
+
+    /// <summary>
+    /// Gets or sets the exception content.
+    /// </summary>
+    public virtual string? Exception { get; set; } = default!;
+
+    /// <summary>
     /// Gets or sets the name.
     /// </summary>
     public virtual string Name { get; set; } = default!;
