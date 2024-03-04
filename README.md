@@ -1,4 +1,4 @@
-# ZNetCS.AspNetCore.Logging.EntityFrameworkCore
+# ZNetCS.AE.AspNetCore.Logging.EntityFrameworkCore
 
 This is Entity Framework Core logger and logger provider. A small package to allow store logs in any data store using Entity Framework Core. It was prepared to use in ASP
 NET Core application, but it does not contain any references that prevents to use it in plain .NET Core application.
@@ -7,10 +7,10 @@ As from version 2.0.2 there is silent error handling on logger SaveChanges(). To
 
 ## Installing
 
-Install using the [ZNetCS.AspNetCore.Logging.EntityFrameworkCore NuGet package](https://www.nuget.org/packages/ZNetCS.AspNetCore.Logging.EntityFrameworkCore)
+Install using the [ZNetCS.AE.AspNetCore.Logging.EntityFrameworkCore NuGet package](https://www.nuget.org/packages/ZNetCS.AE.AspNetCore.Logging.EntityFrameworkCore/)
 
 ```
-PM> Install-Package ZNetCS.AspNetCore.Logging.EntityFrameworkCore
+PM> Install-Package ZNetCS.AE.AspNetCore.Logging.EntityFrameworkCore
 ```
 
 ## Usage

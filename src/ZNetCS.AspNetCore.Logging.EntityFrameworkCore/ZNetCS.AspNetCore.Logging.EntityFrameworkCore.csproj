@@ -7,9 +7,10 @@
     <Version>8.0.2</Version>
     <Copyright>Copyright © Marcin Smółka 2016 - 2024</Copyright>
     <PackageProjectUrl>https://github.com/aaronegger/ZNetCS.AspNetCore.Logging.EntityFrameworkCore</PackageProjectUrl>
-    <Title>ZNetCS.AspNetCore.Logging.EntityFrameworkCore</Title>
+    <Title>ZNetCS.AE.AspNetCore.Logging.EntityFrameworkCore</Title>
     <Authors>Marcin Smółka, Aaron Egger</Authors>
     <RepositoryUrl>https://github.com/aaronegger/ZNetCS.AspNetCore.Logging.EntityFrameworkCore</RepositoryUrl>
+    <PackageId>ZNetCS.AE.AspNetCore.Logging.EntityFrameworkCore</PackageId>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
