@@ -1,8 +1,5 @@
 # ZNetCS.AspNetCore.Logging.EntityFrameworkCore
 
-[![NuGet](https://img.shields.io/nuget/v/ZNetCS.AspNetCore.Logging.EntityFrameworkCore.svg)](https://www.nuget.org/packages/ZNetCS.AspNetCore.Logging.EntityFrameworkCore)
-[![Build](https://github.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore/workflows/build/badge.svg)](https://github.com/msmolka/ZNetCS.AspNetCore.Logging.EntityFrameworkCore/actions)
-
 This is Entity Framework Core logger and logger provider. A small package to allow store logs in any data store using Entity Framework Core. It was prepared to use in ASP
 NET Core application, but it does not contain any references that prevents to use it in plain .NET Core application.
 
