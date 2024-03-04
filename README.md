@@ -22,7 +22,7 @@ When you install the package, it should be added to your `.csproj`. Alternativel
 
 ```xml
 <ItemGroup>
-    <PackageReference Include="ZNetCS.AspNetCore.Logging.EntityFrameworkCore" Version="6.0.0" />
+    <PackageReference Include="ZNetCS.AE.AspNetCore.Logging.EntityFrameworkCore" Version="8.0.2" />
 </ItemGroup>
 ```
 
@@ -284,14 +284,17 @@ public static void Main(string[] args)
             logging.AddEntityFramework<MyDbContext>(
                 opts =>
                 {
-                    opts.Creator = (logLevel, eventId, name, message) => new Log
-                    {
-                        TimeStamp = DateTimeOffset.Now,
-                        Level = logLevel,
-                        EventId = eventId,
-                        Name = "This is my custom log",
-                        Message = message
-                    };
+                    opts.Creator = (logLevel, eventId, _, message, exception, stacktrace)
+                        => new Log
+                        {
+                            TimeStamp = DateTimeOffset.Now,
+                            Level = logLevel,
+                            EventId = eventId,
+                            Name = "This is my custom log",
+                            Message = message,
+                            Stacktrace = stacktrace,
+                            Exception = exception
+                        };
                 });
 
         })
