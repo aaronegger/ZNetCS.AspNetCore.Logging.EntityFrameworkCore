@@ -18,6 +18,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+using ZNetCS.AspNetCore.Logging.EntityFrameworkCore.Extensions;
+
 #endregion
 
 /// <summary>
@@ -222,8 +224,9 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
 
         message = $"{message}";
         string? stacktrace = exception?.StackTrace;
+        string? minstack = exception?.MinifyStacktrace();
 
-        this.WriteMessage(message, logLevel, eventId.Id, exception?.Message.ToString(), stacktrace);
+        this.WriteMessage(message, logLevel, eventId.Id, exception?.Message.ToString(), stacktrace, minstack);
     }
 
     #endregion
@@ -250,8 +253,11 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
     /// <param name="stacktrace">
     /// The stacktrace of the exception (optional).
     /// </param>
+    /// <param name="minifiedStacktrace">
+    /// The minified stacktrace of the exception (optional).
+    /// </param>
     [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Saving log should never throw error.")]
-    protected virtual void WriteMessage(string message, LogLevel logLevel, int eventId, string? exception = null, string? stacktrace = null)
+    protected virtual void WriteMessage(string message, LogLevel logLevel, int eventId, string? exception = null, string? stacktrace = null, string? minifiedStacktrace = null)
     {
         // create separate scope for DbContextOptions and DbContext
         using IServiceScope? scope = this.serviceProvider.CreateScope();
@@ -263,6 +269,7 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
 
         // create new log with resolving dependency injection
         TLog log = this.Creator((int)logLevel, eventId, this.Name, message, exception, stacktrace);
+        log.MinifiedStacktrace = minifiedStacktrace;
 
         context.Set<TLog>().Add(log);
 

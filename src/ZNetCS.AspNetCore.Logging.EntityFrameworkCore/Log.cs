@@ -59,6 +59,11 @@ public class Log<TKey> where TKey : IEquatable<TKey>
     public virtual string? Stacktrace { get; set; } = default!;
 
     /// <summary>
+    /// Gets or sets the minified stacktrace.
+    /// </summary>
+    public virtual string? MinifiedStacktrace { get; set; } = default!;
+
+    /// <summary>
     /// Gets or sets the exception content.
     /// </summary>
     public virtual string? Exception { get; set; } = default!;
