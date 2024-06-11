@@ -118,7 +118,7 @@ internal class TestWebApplicationFactory : WebApplicationFactory<Startup>
                         logging.AddEntityFramework<ContextSimple>(
                             opts =>
                             {
-                                opts.Creator = (logLevel, eventId, _, message, exception, stacktrace)
+                                opts.Creator = (logLevel, eventId, _, message, exceptionMessage, stacktrace, exception)
                                     => new Log
                                     {
                                         TimeStamp = DateTimeOffset.Now,
@@ -127,7 +127,7 @@ internal class TestWebApplicationFactory : WebApplicationFactory<Startup>
                                         Name = "This is my custom log",
                                         Message = message,
                                         Stacktrace = stacktrace,
-                                        Exception = exception
+                                        Exception = exceptionMessage
                                     };
                             });
                     });

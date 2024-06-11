@@ -38,7 +38,7 @@ public class EntityFrameworkLoggerOptions<TLog>
     /// <summary>
     /// Gets or sets the creator.
     /// </summary>
-    public Func<int, int, string, string, string?, string?, TLog>? Creator { get; set; }
+    public Func<int, int, string, string, string?, string?, Exception?, TLog>? Creator { get; set; }
 
     #endregion
 }
