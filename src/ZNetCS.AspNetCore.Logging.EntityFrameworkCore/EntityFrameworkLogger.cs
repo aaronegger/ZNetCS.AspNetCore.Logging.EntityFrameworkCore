@@ -52,7 +52,7 @@ public class EntityFrameworkLogger<TContext> : EntityFrameworkLogger<TContext, L
         IServiceProvider serviceProvider,
         string name,
         Func<string, LogLevel, bool> filter,
-        Func<int, int, string, string, string?, string?, Log>? creator = null)
+        Func<int, int, string, string, string?, string?, Exception?, Log>? creator = null)
         : base(serviceProvider, name, filter, creator)
     {
     }
@@ -96,7 +96,7 @@ public class EntityFrameworkLogger<TContext, TLog> : EntityFrameworkLogger<TCont
         IServiceProvider serviceProvider,
         string name,
         Func<string, LogLevel, bool> filter,
-        Func<int, int, string, string, string?, string?, TLog>? creator = null)
+        Func<int, int, string, string, string?, string?, Exception?, TLog>? creator = null)
         : base(serviceProvider, name, filter, creator)
     {
     }
@@ -158,7 +158,7 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
         IServiceProvider? serviceProvider,
         string? name,
         Func<string, LogLevel, bool>? filter,
-        Func<int, int, string, string, string?, string?, TLog>? creator = null)
+        Func<int, int, string, string, string?, string?, Exception?, TLog>? creator = null)
     {
         this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         this.filter = filter ?? throw new ArgumentNullException(nameof(filter));
@@ -174,7 +174,7 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
     /// <summary>
     /// Gets the function used to create new model instance for a log.
     /// </summary>
-    protected virtual Func<int, int, string, string, string?, string?, TLog> Creator { get; }
+    protected virtual Func<int, int, string, string, string?, string?, Exception?, TLog> Creator { get; }
 
     /// <summary>
     /// Gets the name of the logger.
@@ -222,11 +222,7 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
             return;
         }
 
-        message = $"{message}";
-        string? stacktrace = exception?.StackTrace;
-        string? minstack = exception?.MinifyStacktrace();
-
-        this.WriteMessage(message, logLevel, eventId.Id, exception?.Message.ToString(), stacktrace, minstack);
+        this.WriteMessage(message, logLevel, eventId.Id, exception);
     }
 
     #endregion
@@ -248,16 +244,10 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
     /// The event id to write.
     /// </param>
     /// <param name="exception">
-    /// The content of the exception (optional).
-    /// </param>
-    /// <param name="stacktrace">
-    /// The stacktrace of the exception (optional).
-    /// </param>
-    /// <param name="minifiedStacktrace">
-    /// The minified stacktrace of the exception (optional).
+    /// The exception (optional).
     /// </param>
     [SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Saving log should never throw error.")]
-    protected virtual void WriteMessage(string message, LogLevel logLevel, int eventId, string? exception = null, string? stacktrace = null, string? minifiedStacktrace = null)
+    protected virtual void WriteMessage(string message, LogLevel logLevel, int eventId, Exception? exception = null)
     {
         // create separate scope for DbContextOptions and DbContext
         using IServiceScope? scope = this.serviceProvider.CreateScope();
@@ -267,9 +257,12 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
         // registered as singleton, we should avoid this.
         using var context = ActivatorUtilities.CreateInstance<TContext>(scope.ServiceProvider);
 
+        string? stacktrace = exception?.StackTrace;
+        string? minstack = exception?.MinifyStacktrace();
+
         // create new log with resolving dependency injection
-        TLog log = this.Creator((int)logLevel, eventId, this.Name, message, exception, stacktrace);
-        log.MinifiedStacktrace = minifiedStacktrace;
+        TLog log = this.Creator((int)logLevel, eventId, this.Name, message, exception?.Message.ToString(), stacktrace, exception);
+        log.MinifiedStacktrace = minstack;
 
         context.Set<TLog>().Add(log);
 
@@ -298,13 +291,16 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
     /// <param name="message">
     /// The message.
     /// </param>
-    /// <param name="exception">
+    /// <param name="exceptionMessage">
     /// The content of the exception (optional).
     /// </param>
     /// <param name="stacktrace">
     /// The stacktrace of the exception (optional).
     /// </param>
-    private TLog DefaultCreator(int logLevel, int eventId, string logName, string message, string? exception = null, string? stacktrace = null)
+    /// <param name="exception">
+    /// The exception (optional).
+    /// </param>
+    private TLog DefaultCreator(int logLevel, int eventId, string logName, string message, string? exceptionMessage = null, string? stacktrace = null, Exception? exception = null)
     {
         // create separate scope for Scope registered dependencies.
         using IServiceScope? scope = this.serviceProvider.CreateScope();
@@ -316,7 +312,7 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
         log.Name = logName.Length > 255 ? logName[..255] : logName;
         log.Message = message;
         log.Stacktrace = stacktrace;
-        log.Exception = exception;
+        log.Exception = exceptionMessage;
 
         return log;
     }

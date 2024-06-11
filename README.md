@@ -19,7 +19,7 @@ When you install the package, it should be added to your `.csproj`. Alternativel
 
 ```xml
 <ItemGroup>
-    <PackageReference Include="ZNetCS.AE.AspNetCore.Logging.EntityFrameworkCore" Version="8.0.2" />
+    <PackageReference Include="ZNetCS.AE.AspNetCore.Logging.EntityFrameworkCore" Version="8.0.4" />
 </ItemGroup>
 ```
 
@@ -63,9 +63,9 @@ add `Logger`. This will also prevent some `StackOverflowException` when using th
 ### .NET 6
 
 ```c#
-builder.Logging..AddFilter<EntityFrameworkLoggerProvider<MyDbContent>>("Microsoft", LogLevel.None);
-builder.Logging..AddFilter<EntityFrameworkLoggerProvider<MyDbContent>>("System", LogLevel.None);
-builder.Logging..AddEntityFramework<MyDbContext>();
+builder.Logging.AddFilter<EntityFrameworkLoggerProvider<MyDbContent>>("Microsoft", LogLevel.None);
+builder.Logging.AddFilter<EntityFrameworkLoggerProvider<MyDbContent>>("System", LogLevel.None);
+builder.Logging.AddEntityFramework<MyDbContext>();
 ```
 
 ### .NET 5 and Below
@@ -281,7 +281,7 @@ public static void Main(string[] args)
             logging.AddEntityFramework<MyDbContext>(
                 opts =>
                 {
-                    opts.Creator = (logLevel, eventId, _, message, exception, stacktrace)
+                    opts.Creator = (logLevel, eventId, _, message, exceptionMessage, stacktrace, exception)
                         => new Log
                         {
                             TimeStamp = DateTimeOffset.Now,
@@ -290,7 +290,7 @@ public static void Main(string[] args)
                             Name = "This is my custom log",
                             Message = message,
                             Stacktrace = stacktrace,
-                            Exception = exception
+                            Exception = exceptionMessage
                         };
                 });
 

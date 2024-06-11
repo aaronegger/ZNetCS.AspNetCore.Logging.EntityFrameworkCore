@@ -4,7 +4,7 @@
     <AssemblyName>ZNetCS.AspNetCore.Logging.EntityFrameworkCore</AssemblyName>
     <TargetFrameworks>netcoreapp3.1;net5.0;net6.0;net8.0</TargetFrameworks>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>8.0.4</Version>
+    <Version>8.0.5</Version>
     <Copyright>Copyright © Marcin Smółka 2016 - 2024</Copyright>
     <PackageProjectUrl>https://github.com/aaronegger/ZNetCS.AspNetCore.Logging.EntityFrameworkCore</PackageProjectUrl>
     <Title>ZNetCS.AE.AspNetCore.Logging.EntityFrameworkCore</Title>
