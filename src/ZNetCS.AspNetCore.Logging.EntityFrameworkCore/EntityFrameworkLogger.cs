@@ -52,7 +52,7 @@ public class EntityFrameworkLogger<TContext> : EntityFrameworkLogger<TContext, L
         IServiceProvider serviceProvider,
         string name,
         Func<string, LogLevel, bool> filter,
-        Func<int, int, string, string, string?, string?, Exception?, Log>? creator = null)
+        Func<int, int, string, string, string?, string?, Exception?, IServiceProvider, Log>? creator = null)
         : base(serviceProvider, name, filter, creator)
     {
     }
@@ -96,7 +96,7 @@ public class EntityFrameworkLogger<TContext, TLog> : EntityFrameworkLogger<TCont
         IServiceProvider serviceProvider,
         string name,
         Func<string, LogLevel, bool> filter,
-        Func<int, int, string, string, string?, string?, Exception?, TLog>? creator = null)
+        Func<int, int, string, string, string?, string?, Exception?, IServiceProvider, TLog>? creator = null)
         : base(serviceProvider, name, filter, creator)
     {
     }
@@ -158,7 +158,7 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
         IServiceProvider? serviceProvider,
         string? name,
         Func<string, LogLevel, bool>? filter,
-        Func<int, int, string, string, string?, string?, Exception?, TLog>? creator = null)
+        Func<int, int, string, string, string?, string?, Exception?, IServiceProvider, TLog>? creator = null)
     {
         this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         this.filter = filter ?? throw new ArgumentNullException(nameof(filter));
@@ -174,7 +174,7 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
     /// <summary>
     /// Gets the function used to create new model instance for a log.
     /// </summary>
-    protected virtual Func<int, int, string, string, string?, string?, Exception?, TLog> Creator { get; }
+    protected virtual Func<int, int, string, string, string?, string?, Exception?, IServiceProvider, TLog> Creator { get; }
 
     /// <summary>
     /// Gets the name of the logger.
@@ -261,7 +261,7 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
         string? minstack = exception?.MinifyStacktrace();
 
         // create new log with resolving dependency injection
-        TLog log = this.Creator((int)logLevel, eventId, this.Name, message, exception?.Message.ToString(), stacktrace, exception);
+        TLog log = this.Creator((int)logLevel, eventId, this.Name, message, exception?.Message.ToString(), stacktrace, exception, this.serviceProvider);
         log.MinifiedStacktrace = minstack;
 
         context.Set<TLog>().Add(log);
@@ -300,7 +300,7 @@ public class EntityFrameworkLogger<TContext, TLog, TKey> : ILogger
     /// <param name="exception">
     /// The exception (optional).
     /// </param>
-    private TLog DefaultCreator(int logLevel, int eventId, string logName, string message, string? exceptionMessage = null, string? stacktrace = null, Exception? exception = null)
+    private TLog DefaultCreator(int logLevel, int eventId, string logName, string message, string? exceptionMessage = null, string? stacktrace = null, Exception? exception = null, IServiceProvider? serviceProvider = null)
     {
         // create separate scope for Scope registered dependencies.
         using IServiceScope? scope = this.serviceProvider.CreateScope();

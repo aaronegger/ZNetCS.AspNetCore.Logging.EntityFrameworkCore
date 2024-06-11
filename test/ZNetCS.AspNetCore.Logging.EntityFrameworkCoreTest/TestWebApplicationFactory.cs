@@ -118,7 +118,7 @@ internal class TestWebApplicationFactory : WebApplicationFactory<Startup>
                         logging.AddEntityFramework<ContextSimple>(
                             opts =>
                             {
-                                opts.Creator = (logLevel, eventId, _, message, exceptionMessage, stacktrace, exception)
+                                opts.Creator = (logLevel, eventId, _, message, exceptionMessage, stacktrace, exception, serviceProvider)
                                     => new Log
                                     {
                                         TimeStamp = DateTimeOffset.Now,

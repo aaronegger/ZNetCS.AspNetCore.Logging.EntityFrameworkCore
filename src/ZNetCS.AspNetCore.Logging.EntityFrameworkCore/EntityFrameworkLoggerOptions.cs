@@ -9,7 +9,7 @@
 
 namespace ZNetCS.AspNetCore.Logging.EntityFrameworkCore;
 
-    #region Usings
+#region Usings
 
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -38,7 +38,7 @@ public class EntityFrameworkLoggerOptions<TLog>
     /// <summary>
     /// Gets or sets the creator.
     /// </summary>
-    public Func<int, int, string, string, string?, string?, Exception?, TLog>? Creator { get; set; }
+    public Func<int, int, string, string, string?, string?, Exception?, IServiceProvider, TLog>? Creator { get; set; }
 
     #endregion
 }
